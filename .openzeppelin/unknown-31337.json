@@ -1,0 +1,102 @@
+{
+  "manifestVersion": "3.2",
+  "impls": {
+    "4010c8302b3c96df0f4a1a393975772466fac2df48db5aecfebc006383383063": {
+      "address": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
+      "txHash": "0xe0368fd75a4bdfd1972faa806c332405038a7d673aaddfde5578c63d535ba094",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "@openzeppelin/contracts/proxy/utils/Initializable.sol:23"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "@openzeppelin/contracts/proxy/utils/Initializable.sol:28"
+          },
+          {
+            "contract": "SwapperV1",
+            "label": "feeRecipient",
+            "type": "t_address",
+            "src": "contracts/SwapperV1.sol:26"
+          },
+          {
+            "contract": "SwapperV1",
+            "label": "fee",
+            "type": "t_uint256",
+            "src": "contracts/SwapperV1.sol:28"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_bool": {
+            "label": "bool"
+          }
+        }
+      }
+    },
+    "b489d92212b07395c7aef62d92149d63c48d7340860a9ef2833e758038197687": {
+      "address": "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318",
+      "txHash": "0xe91e59d567d15c7f38af37cad7c04c6452ff645f909df4869a8ef75595d6ca5b",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "@openzeppelin/contracts/proxy/utils/Initializable.sol:23"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "@openzeppelin/contracts/proxy/utils/Initializable.sol:28"
+          },
+          {
+            "contract": "SwapperV2",
+            "label": "feeRecipient",
+            "type": "t_address",
+            "src": "contracts/SwapperV2.sol:26"
+          },
+          {
+            "contract": "SwapperV2",
+            "label": "fee",
+            "type": "t_uint256",
+            "src": "contracts/SwapperV2.sol:28"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_bool": {
+            "label": "bool"
+          }
+        }
+      }
+    }
+  },
+  "proxies": [
+    {
+      "address": "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853",
+      "kind": "transparent",
+      "txHash": "0x4bd9aa34426a2707f9618a344977f95142552530ec5693e1040b47fc5d48d6a3"
+    }
+  ],
+  "admin": {
+    "address": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+    "txHash": "0x0a4dddc11de7c6ab358859ccb3f4fa4f5e88d8a0e597357153416a367d65b44a"
+  }
+}
