@@ -44,9 +44,9 @@
         }
       }
     },
-    "b489d92212b07395c7aef62d92149d63c48d7340860a9ef2833e758038197687": {
+    "45c64bdb7a8e812dad146e6497f184957f17b07d2b560b095c873c23a6430285": {
       "address": "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318",
-      "txHash": "0xe91e59d567d15c7f38af37cad7c04c6452ff645f909df4869a8ef75595d6ca5b",
+      "txHash": "0xf620285545ab1a299fa2656da7d51fa8363db65f514cad94d31f6bd0357bcb5f",
       "layout": {
         "storage": [
           {
@@ -65,13 +65,13 @@
             "contract": "SwapperV2",
             "label": "feeRecipient",
             "type": "t_address",
-            "src": "contracts/SwapperV2.sol:26"
+            "src": "contracts/SwapperV2.sol:25"
           },
           {
             "contract": "SwapperV2",
             "label": "fee",
             "type": "t_uint256",
-            "src": "contracts/SwapperV2.sol:28"
+            "src": "contracts/SwapperV2.sol:27"
           }
         ],
         "types": {

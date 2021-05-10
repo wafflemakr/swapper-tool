@@ -8,136 +8,137 @@ import "./interfaces/IUniswapV2Exchange.sol";
 import "./interfaces/IUniswapV2Router.sol";
 import "./interfaces/IUniswapV2Factory.sol";
 import "./interfaces/IWETH.sol";
-import "./interfaces/IBalancerRegistry.sol";
 import "./interfaces/IBalancerPool.sol";
 
 contract SwapperV2 is Initializable {
-  using SafeMath for uint256;
-  using UniswapV2ExchangeLib for IUniswapV2Exchange;
+    using SafeMath for uint256;
+    using UniswapV2ExchangeLib for IUniswapV2Exchange;
 
-  // ======== STATE V1 STARTS ======== //
+    // ======== STATE V1 STARTS ======== //
 
-  IUniswapV2Factory internal constant factory =
-    IUniswapV2Factory(0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f);
+    IUniswapV2Factory internal constant factory =
+        IUniswapV2Factory(0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f);
 
-  IWETH internal constant WETH =
-    IWETH(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);
+    IWETH internal constant WETH =
+        IWETH(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);
 
-  address public feeRecipient;
+    address public feeRecipient;
 
-  uint256 public fee;
+    uint256 public fee;
 
-  // ======== STATE V1 ENDS ======== //
+    // ======== STATE V1 ENDS ======== //
 
-  // ======== STATE V2 STARTS ======== //
+    // ======== STATE V2 STARTS ======== //
 
-  IBalancerRegistry internal constant balancerRegistry =
-    IBalancerRegistry(0x65e67cbc342712DF67494ACEfc06fe951EE93982);
+    enum Dex {UNISWAP, BALANCER}
 
-  enum Dex { UNISWAP, BALANCER }
-
-  // ======== STATE V2 ENDS ======== //
-
-  function initialize(address _feeRecipient, uint256 _fee)
-    external
-    initializer
-  {
-    feeRecipient = _feeRecipient;
-    fee = _fee;
-  }
-
-  function getAddressETH() public pure returns (address eth) {
-    eth = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
-  }
-
-  function _setApproval(
-    address to,
-    address erc20,
-    uint256 srcAmt
-  ) internal {
-    if (srcAmt > IERC20(erc20).allowance(address(this), to)) {
-      IERC20(erc20).approve(to, type(uint256).max);
+    struct Swaps {
+        address token;
+        address pool;
+        uint256 distribution;
+        Dex dex;
     }
-  }
 
-  function _swapUniswap(
-    IERC20 fromToken,
-    IERC20 destToken,
-    uint256 amount
-  ) internal returns (uint256 returnAmount) {
-    require(fromToken != destToken, "SAME_TOKEN");
-    require(amount > 0, "ZERO-AMOUNT");
+    // ======== STATE V2 ENDS ======== //
 
-    IUniswapV2Exchange exchange = factory.getPair(fromToken, destToken);
-    returnAmount = exchange.getReturn(fromToken, destToken, amount);
-
-    fromToken.transfer(address(exchange), amount);
-    if (
-      uint256(uint160(address(fromToken))) <
-      uint256(uint160(address(destToken)))
-    ) {
-      exchange.swap(0, returnAmount, msg.sender, "");
-    } else {
-      exchange.swap(returnAmount, 0, msg.sender, "");
+    function initialize(address _feeRecipient, uint256 _fee)
+        external
+        initializer
+    {
+        feeRecipient = _feeRecipient;
+        fee = _fee;
     }
-  }
 
-  function _swapBalancer(
-    address fromToken,
-    address destToken,
-    uint256 amount,
-    uint256 poolIndex
-  ) internal {
-    address[] memory pools =
-      balancerRegistry.getBestPoolsWithLimit(
-        fromToken,
-        destToken,
-        poolIndex + 1
-      );
+    function getAddressETH() public pure returns (address eth) {
+        eth = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
+    }
 
-    _setApproval(pools[poolIndex], fromToken, amount);
+    function _setApproval(
+        address to,
+        address erc20,
+        uint256 srcAmt
+    ) internal {
+        if (srcAmt > IERC20(erc20).allowance(address(this), to)) {
+            IERC20(erc20).approve(to, type(uint256).max);
+        }
+    }
 
-    IBalancerPool(pools[poolIndex]).swapExactAmountIn(
-      fromToken,
-      amount,
-      destToken,
-      0,
-      type(uint256).max
-    );
-  }
+    function _swapUniswap(
+        address pool,
+        IERC20 fromToken,
+        IERC20 destToken,
+        uint256 amount
+    ) internal {
+        require(fromToken != destToken, "SAME_TOKEN");
+        require(amount > 0, "ZERO-AMOUNT");
 
-  /**
+        uint256 returnAmount =
+            IUniswapV2Exchange(pool).getReturn(fromToken, destToken, amount);
+
+        fromToken.transfer(pool, amount);
+        if (
+            uint256(uint160(address(fromToken))) <
+            uint256(uint160(address(destToken)))
+        ) {
+            IUniswapV2Exchange(pool).swap(0, returnAmount, msg.sender, "");
+        } else {
+            IUniswapV2Exchange(pool).swap(returnAmount, 0, msg.sender, "");
+        }
+    }
+
+    function _swapBalancer(
+        address pool,
+        address fromToken,
+        address destToken,
+        uint256 amount
+    ) internal {
+        _setApproval(pool, fromToken, amount);
+
+        IBalancerPool(pool).swapExactAmountIn(
+            fromToken,
+            amount,
+            destToken,
+            1,
+            type(uint256).max
+        );
+    }
+
+    /**
     @notice swap ETH for multiple tokens according to distribution % and a dex
     @dev tokens length should be equal to distribution length
     @dev msg.value will be completely converted to tokens
-    @param tokens array of tokens to swap to
-    @param distribution array of % amount to convert eth from (3054 = 30.54%)
-    @param dexes array of % amount to convert eth from (3054 = 30.54%)
+    @param swaps array of swap struct containing details about the swap to perform
    */
-  function swap(
-    address[] memory tokens,
-    uint256[] memory distribution,
-    Dex[] memory dexes
-  ) external payable {
-    require(msg.value > 0);
-    require(
-      tokens.length == distribution.length && tokens.length == dexes.length
-    );
-    uint256 afterFee = msg.value.sub(msg.value.mul(fee).div(10000));
+    function swap(Swaps[] memory swaps) external payable {
+        require(msg.value > 0);
+        require(swaps.length < 10);
 
-    for (uint256 i = 0; i < tokens.length; i++) {
-      uint256 ethAmt = afterFee.mul(distribution[i]).div(10000);
+        uint256 afterFee = msg.value.sub(msg.value.mul(fee).div(10000));
+        WETH.deposit{value: afterFee}();
 
-      WETH.deposit{ value: ethAmt }();
+        uint256 ethAmt;
 
-      if (dexes[i] == Dex.UNISWAP)
-        _swapUniswap(WETH, IERC20(tokens[i]), ethAmt);
-      else if (dexes[i] == Dex.BALANCER)
-        _swapBalancer(address(WETH), tokens[i], ethAmt, 0);
-      else revert("DEX NOT SUPPORTED");
+        for (uint256 i = 0; i < swaps.length; i++) {
+            ethAmt = afterFee.mul(swaps[i].distribution).div(10000);
+
+            if (swaps[i].dex == Dex.UNISWAP)
+                _swapUniswap(
+                    swaps[i].pool,
+                    WETH,
+                    IERC20(swaps[i].token),
+                    ethAmt
+                );
+            else if (swaps[i].dex == Dex.BALANCER)
+                _swapBalancer(
+                    swaps[i].pool,
+                    address(WETH),
+                    swaps[i].token,
+                    ethAmt
+                );
+            else revert("DEX NOT SUPPORTED");
+        }
+
+        // Send remaining ETH to fee recipient
+        payable(feeRecipient).transfer(address(this).balance);
     }
-
-    // Send remaining ETH to fee recipient
-    payable(feeRecipient).transfer(address(this).balance);
-  }
 }
