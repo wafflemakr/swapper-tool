@@ -3,7 +3,7 @@
   "impls": {
     "4010c8302b3c96df0f4a1a393975772466fac2df48db5aecfebc006383383063": {
       "address": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
-      "txHash": "0xe0368fd75a4bdfd1972faa806c332405038a7d673aaddfde5578c63d535ba094",
+      "txHash": "0xf54c468dbe25b0a3b127fee3399c709f5da2c0b9659d8d2777172e1ace11819c",
       "layout": {
         "storage": [
           {
@@ -22,13 +22,13 @@
             "contract": "SwapperV1",
             "label": "feeRecipient",
             "type": "t_address",
-            "src": "contracts/SwapperV1.sol:26"
+            "src": "contracts/SwapperV1.sol:30"
           },
           {
             "contract": "SwapperV1",
             "label": "fee",
             "type": "t_uint256",
-            "src": "contracts/SwapperV1.sol:28"
+            "src": "contracts/SwapperV1.sol:32"
           }
         ],
         "types": {
@@ -46,7 +46,7 @@
     },
     "45c64bdb7a8e812dad146e6497f184957f17b07d2b560b095c873c23a6430285": {
       "address": "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318",
-      "txHash": "0xf620285545ab1a299fa2656da7d51fa8363db65f514cad94d31f6bd0357bcb5f",
+      "txHash": "0x02d0ac71726bb7c0a34cc6657fe64a4ee351a5ca2dc9537a7e2e51ea066939f1",
       "layout": {
         "storage": [
           {

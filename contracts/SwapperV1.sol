@@ -11,6 +11,10 @@ import "./interfaces/IWETH.sol";
 import "./interfaces/IBalancerRegistry.sol";
 import "./interfaces/IBalancerPool.sol";
 
+/**
+    @title Multi Swap Tool a.k.a. Swapper
+    @author wafflemakr
+*/
 contract SwapperV1 is Initializable {
   using SafeMath for uint256;
   using UniswapV2ExchangeLib for IUniswapV2Exchange;
@@ -43,6 +47,9 @@ contract SwapperV1 is Initializable {
     eth = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
   }
 
+  /**
+    @notice make a swap using uniswap
+   */
   function _swapUniswap(
     IERC20 fromToken,
     IERC20 destToken,
