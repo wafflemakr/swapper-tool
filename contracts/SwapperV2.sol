@@ -12,7 +12,7 @@ import "./interfaces/IBalancerPool.sol";
 
 /**
     @title Multi Swap Tool a.k.a. Swapper
-    @author waflemakr
+    @author wafflemakr
 */
 contract SwapperV2 is Initializable {
   using SafeMath for uint256;
