@@ -107,13 +107,16 @@ contract SwapperV2 is Initializable {
   ) internal {
     _setApproval(pool, fromToken, amount);
 
-    IBalancerPool(pool).swapExactAmountIn(
-      fromToken,
-      amount,
-      destToken,
-      1,
-      type(uint256).max
-    );
+    (uint256 tokenAmountOut, ) =
+      IBalancerPool(pool).swapExactAmountIn(
+        fromToken,
+        amount,
+        destToken,
+        1,
+        type(uint256).max
+      );
+
+    IERC20(destToken).transfer(msg.sender, tokenAmountOut);
   }
 
   /**

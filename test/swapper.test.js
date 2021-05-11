@@ -14,8 +14,6 @@ const USDT_ADDRESS = "0xdac17f958d2ee523a2206206994597c13d831ec7";
 const BALANCER_REGISTRY = "0x65e67cbc342712DF67494ACEfc06fe951EE93982";
 const UNI_FACTORY = "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f";
 
-const { expectEvent, time } = require("@openzeppelin/test-helpers");
-
 // HELPERS
 const toWei = (value) => web3.utils.toWei(String(value));
 const fromWei = (value) => Number(web3.utils.fromWei(String(value)));
