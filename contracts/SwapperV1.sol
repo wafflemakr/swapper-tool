@@ -19,7 +19,7 @@ contract SwapperV1 is Initializable {
   using SafeMath for uint256;
   using UniswapV2ExchangeLib for IUniswapV2Exchange;
 
-  // ======== STATE V1 STARTS ======== //
+  // ======== STATE V1 ======== //
 
   IUniswapV2Factory internal constant factory =
     IUniswapV2Factory(0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f);
@@ -27,12 +27,17 @@ contract SwapperV1 is Initializable {
   IWETH internal constant WETH =
     IWETH(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);
 
+  // Receives 0.1% of the total ETH used for swaps
   address public feeRecipient;
 
+  // fee charged, initializes in 0.1%
   uint256 public fee;
 
-  // ======== STATE V1 ENDS ======== //
+  // =========================== //
 
+  /**
+    @notice intialize contract variables
+   */
   function initialize(address _feeRecipient, uint256 _fee)
     external
     initializer
@@ -43,6 +48,9 @@ contract SwapperV1 is Initializable {
     fee = _fee;
   }
 
+  /**
+    @notice get erc20 representative address for ETH
+   */
   function getAddressETH() public pure returns (address eth) {
     eth = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
   }

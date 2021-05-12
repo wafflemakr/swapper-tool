@@ -3,7 +3,7 @@
   "impls": {
     "4010c8302b3c96df0f4a1a393975772466fac2df48db5aecfebc006383383063": {
       "address": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
-      "txHash": "0x761b1f12294006e851631416f73206f6b845ff00475a6108733216b99b5aa67c",
+      "txHash": "0xcca2f780326f2f0a81ab7980ad7413de1d911d0277e4b4718dbbc93f2de8f484",
       "layout": {
         "storage": [
           {
@@ -22,13 +22,13 @@
             "contract": "SwapperV1",
             "label": "feeRecipient",
             "type": "t_address",
-            "src": "contracts/SwapperV1.sol:30"
+            "src": "contracts/SwapperV1.sol:31"
           },
           {
             "contract": "SwapperV1",
             "label": "fee",
             "type": "t_uint256",
-            "src": "contracts/SwapperV1.sol:32"
+            "src": "contracts/SwapperV1.sol:34"
           }
         ],
         "types": {
@@ -44,9 +44,9 @@
         }
       }
     },
-    "dc2e98cba7294bb1670a3854b9ea66fcb7489f866a0bfbe0919c601431dc66f6": {
+    "267b8f62cec4dc982061f9690d012f86119dfaea9e4c530b755be37f7c3d7b09": {
       "address": "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318",
-      "txHash": "0x45653c56f3226c5fdf1f18d9a9aa5c1017048b97eb4fb400727d9259a4a829fe",
+      "txHash": "0xee90a0db0a7dffff3de91c1cf75b7237e4b05b0465e8dd237bc2ca440cc8b341",
       "layout": {
         "storage": [
           {
@@ -62,16 +62,16 @@
             "src": "@openzeppelin/contracts/proxy/utils/Initializable.sol:28"
           },
           {
-            "contract": "SwapperV2",
+            "contract": "SwapperV1",
             "label": "feeRecipient",
             "type": "t_address",
-            "src": "contracts/SwapperV2.sol:29"
+            "src": "contracts/SwapperV1.sol:31"
           },
           {
-            "contract": "SwapperV2",
+            "contract": "SwapperV1",
             "label": "fee",
             "type": "t_uint256",
-            "src": "contracts/SwapperV2.sol:31"
+            "src": "contracts/SwapperV1.sol:34"
           }
         ],
         "types": {

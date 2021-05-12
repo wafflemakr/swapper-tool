@@ -1,38 +1,18 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "./interfaces/IUniswapV2Exchange.sol";
-import "./interfaces/IUniswapV2Router.sol";
-import "./interfaces/IUniswapV2Factory.sol";
-import "./interfaces/IWETH.sol";
 import "./interfaces/IBalancerPool.sol";
+import "./SwapperV1.sol";
 
 /**
     @title Multi Swap Tool a.k.a. Swapper
     @author wafflemakr
 */
-contract SwapperV2 is Initializable {
+contract SwapperV2 is SwapperV1 {
   using SafeMath for uint256;
   using UniswapV2ExchangeLib for IUniswapV2Exchange;
 
-  // ======== STATE V1 STARTS ======== //
-
-  IUniswapV2Factory internal constant factory =
-    IUniswapV2Factory(0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f);
-
-  IWETH internal constant WETH =
-    IWETH(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);
-
-  address public feeRecipient;
-
-  uint256 public fee;
-
-  // ======== STATE V1 ENDS ======== //
-
-  // ======== STATE V2 STARTS ======== //
+  // ======== STATE V2 ======== //
 
   enum Dex { UNISWAP, BALANCER }
 
@@ -43,19 +23,7 @@ contract SwapperV2 is Initializable {
     Dex dex;
   }
 
-  // ======== STATE V2 ENDS ======== //
-
-  function initialize(address _feeRecipient, uint256 _fee)
-    external
-    initializer
-  {
-    feeRecipient = _feeRecipient;
-    fee = _fee;
-  }
-
-  function getAddressETH() public pure returns (address eth) {
-    eth = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
-  }
+  // =========================== //
 
   /**
         @dev infite approve if allowance is not enough
@@ -125,7 +93,7 @@ contract SwapperV2 is Initializable {
     @dev msg.value will be completely converted to tokens
     @param swaps array of swap struct containing details about the swap to perform
    */
-  function swap(Swaps[] memory swaps) external payable {
+  function swapMultiple(Swaps[] memory swaps) external payable {
     require(msg.value > 0);
     require(swaps.length < 10);
 

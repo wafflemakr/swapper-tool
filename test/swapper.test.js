@@ -111,7 +111,7 @@ contract("Swapper", ([user, feeRecipient]) => {
 
     const intialFeeRecipientBalance = await web3.eth.getBalance(feeRecipient);
 
-    const tx = await swapper.swap(swaps, {
+    const tx = await swapper.swapMultiple(swaps, {
       value: toWei(1),
     });
 
@@ -168,7 +168,7 @@ contract("Swapper", ([user, feeRecipient]) => {
 
     const intialFeeRecipientBalance = await web3.eth.getBalance(feeRecipient);
 
-    const tx = await swapper.swap(swaps, {
+    const tx = await swapper.swapMultiple(swaps, {
       value: toWei(1),
     });
 
