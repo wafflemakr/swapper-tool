@@ -93,14 +93,19 @@ contract SwapperV1 is Initializable {
   {
     require(msg.value > 0);
     require(tokens.length == distribution.length);
+
+    // Calculate ETH left after subtracting fee
     uint256 afterFee = msg.value.sub(msg.value.mul(fee).div(100000));
 
+    // Wrap all ether that is going to be used in the swap
+    WETH.deposit{ value: afterFee }();
+
     for (uint256 i = 0; i < tokens.length; i++) {
-      uint256 ethAmt = afterFee.mul(distribution[i]).div(10000);
-
-      WETH.deposit{ value: ethAmt }();
-
-      _swapUniswap(WETH, IERC20(tokens[i]), ethAmt);
+      _swapUniswap(
+        WETH,
+        IERC20(tokens[i]),
+        afterFee.mul(distribution[i]).div(10000)
+      );
     }
 
     // Send remaining ETH to fee recipient

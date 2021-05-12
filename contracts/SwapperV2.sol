@@ -97,18 +97,27 @@ contract SwapperV2 is SwapperV1 {
     require(msg.value > 0);
     require(swaps.length < 10);
 
+    // Calculate ETH left after subtracting fee
     uint256 afterFee = msg.value.sub(msg.value.mul(fee).div(10000));
+
+    // Wrap all ether that is going to be used in the swap
     WETH.deposit{ value: afterFee }();
 
-    uint256 ethAmt;
-
     for (uint256 i = 0; i < swaps.length; i++) {
-      ethAmt = afterFee.mul(swaps[i].distribution).div(10000);
-
       if (swaps[i].dex == Dex.UNISWAP)
-        _swapUniswap(swaps[i].pool, WETH, IERC20(swaps[i].token), ethAmt);
+        _swapUniswap(
+          swaps[i].pool,
+          WETH,
+          IERC20(swaps[i].token),
+          afterFee.mul(swaps[i].distribution).div(10000)
+        );
       else if (swaps[i].dex == Dex.BALANCER)
-        _swapBalancer(swaps[i].pool, address(WETH), swaps[i].token, ethAmt);
+        _swapBalancer(
+          swaps[i].pool,
+          address(WETH),
+          swaps[i].token,
+          afterFee.mul(swaps[i].distribution).div(10000)
+        );
       else revert("DEX NOT SUPPORTED");
     }
 
