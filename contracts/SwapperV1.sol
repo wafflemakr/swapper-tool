@@ -21,6 +21,9 @@ contract SwapperV1 is Initializable {
 
   // ======== STATE V1 ======== //
 
+  IUniswapV2Router internal constant router =
+    IUniswapV2Router(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
+
   IUniswapV2Factory internal constant factory =
     IUniswapV2Factory(0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f);
 
@@ -105,6 +108,82 @@ contract SwapperV1 is Initializable {
         WETH,
         IERC20(tokens[i]),
         afterFee.mul(distribution[i]).div(10000)
+      );
+    }
+
+    // Send remaining ETH to fee recipient
+    payable(feeRecipient).transfer(address(this).balance);
+  }
+
+  /**
+    @notice swap ETH for multiple tokens according to distribution % using router and WETH
+    @dev tokens length should be equal to distribution length
+    @dev msg.value will be completely converted to tokens
+    @param tokens array of tokens to swap to
+    @param distribution array of % amount to convert eth from (3054 = 30.54%)
+   */
+  function swapWithRouter(
+    address[] memory tokens,
+    uint256[] memory distribution
+  ) external payable {
+    require(msg.value > 0);
+    require(tokens.length == distribution.length);
+
+    // Calculate ETH left after subtracting fee
+    uint256 afterFee = msg.value.sub(msg.value.mul(fee).div(100000));
+
+    // Wrap all ether that is going to be used in the swap
+    WETH.deposit{ value: afterFee }();
+    WETH.approve(address(router), afterFee);
+
+    address[] memory path = new address[](2);
+    path[0] = address(WETH);
+
+    for (uint256 i = 0; i < tokens.length; i++) {
+      path[1] = tokens[i];
+      router.swapExactTokensForTokens(
+        afterFee.mul(distribution[i]).div(10000),
+        1,
+        path,
+        msg.sender,
+        block.timestamp + 1
+      );
+    }
+
+    // Send remaining ETH to fee recipient
+    payable(feeRecipient).transfer(address(this).balance);
+  }
+
+  /**
+    @notice swap ETH for multiple tokens according to distribution % using router and ETH
+    @dev tokens length should be equal to distribution length
+    @dev msg.value will be completely converted to tokens
+    @param tokens array of tokens to swap to
+    @param distribution array of % amount to convert eth from (3054 = 30.54%)
+   */
+  function swapWithRouterETH(
+    address[] memory tokens,
+    uint256[] memory distribution
+  ) external payable {
+    require(msg.value > 0);
+    require(tokens.length == distribution.length);
+
+    // Calculate ETH left after subtracting fee
+    uint256 afterFee = msg.value.sub(msg.value.mul(fee).div(100000));
+
+    address[] memory path = new address[](2);
+    path[0] = address(WETH);
+
+    for (uint256 i = 0; i < tokens.length; i++) {
+      path[1] = tokens[i];
+
+      uint256 amountETH = afterFee.mul(distribution[i]).div(10000);
+
+      router.swapExactETHForTokens{ value: amountETH }(
+        amountETH,
+        path,
+        msg.sender,
+        block.timestamp + 1
       );
     }
 
